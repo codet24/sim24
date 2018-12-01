@@ -421,6 +421,7 @@ case 'add':
 break;
 case 'edit':
 ?>
+<div id='results'>
 <div class="content-wrapper">
     <section class="content-header">
       <h1> Document Pengajuan JPO</h1>
@@ -430,6 +431,7 @@ case 'edit':
       </ol>
     </section>
     <section class="content">
+    
      <div class="row">
       <div class="col-md-12">
       <?php 
@@ -599,57 +601,17 @@ case 'edit':
                   </div>
                 </div>
                 <br>
+                   <input name="jumlah" id="jumlah" class="form-control input-md" type="text">
                    <!--  -->
-
-                                 
-                <?php
-
-                // $jumlah_detail = $_GET['jumlah_detail'];
-                // echo $jumlah_detail;
-
-                 // $jumlah = "<input type='text' name='jumlah_detail' id='jumlah_detail' />";
-                 $jumlah = 2;
-                 // echo $jumlah;
-                 // exit();
-                 for($i=0; $i<$jumlah;$i++){ 
-                 echo "
-                <div id='sample'> 
-                <div class='form'> 
-                  <div class='row'>
-                    <div class='col-sm-3 nopadding'>
-                        <div class='form-group'>
-                          <input type='hidden' name='id_baris[]' />                           
-                          <input type='text' class='form-control' id='keterangan' name='keterangan[]' value='' placeholder='Keterangan' required>
-                        </div>
-                      </div>  
-                      <div class='col-sm-2 nopadding'>
-                        <div class='form-group'>
-                          <input type='number' class='form-control' id='unit' name='unit[]' value='' placeholder='Unit' required>
-                        </div>
-                      </div>
-                      <div class='col-sm-3 nopadding'>
-                        <div class='form-group'>
-                          <input type='number' class='form-control harga' id='harga_per_unit' name='harga[]' value='' placeholder='Harga' required>
-                        </div>
-                      </div>
-                      <div class='col-sm-3 nopadding'>
-                        <div class='form-group'>
-                          <input type='text' class='form-control ' id='subtotal' name='subtotal[]' value='' placeholder='sub total' required readonly=''>
-                          
-                        </div>
-                      </div>
-                      <div class='col-sm-1 nopadding'>
-                        <div class='copy'>
-                          <div class='input-group-btn'> 
-                            <button class='btn btn-danger remove' type='button'><i class='fa fa-trash'></i></button>
-                          </div>
-                        </div>
-                      </div>
-                      </div>
-                    </div>
-                  </div>"; 
-                }
-                ?>
+                   <div id='isi'>
+                        <div id="loading" style="width:90px"> </div>
+                        <center>
+                          <?php 
+                          // include "edit_doc_a.php"; 
+                          ?> 
+                        </center>
+                   </div>
+              
                 </div>
             <br>
             <br>
@@ -750,9 +712,10 @@ case 'edit':
         </div>
       </div> 
     </div>
+    
   </section> 
 </div>
-
+</div> <!-- end result -->
 <?php
 break;
 case 'delete':

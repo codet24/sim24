@@ -76,7 +76,7 @@ $(document).on('click', '.pilih_doc_a', function() {
           $('#date').val(obj.date);
           $('#no_mor').val(obj.no_mor);
 
-          // buat ttd
+          //buat ttd
           $('#dibuat_oleh').val(obj.dibuat_oleh);
           $('#yang_mengajukan').val(obj.yang_mengajukan);
           $('#yang_menyetujui').val(obj.yang_menyetujui);
@@ -90,16 +90,18 @@ $(document).on('click', '.pilih_doc_a', function() {
           $('#id_karyawan_finance').val(obj.id_karyawan_finance);
           $('#total').val(obj.total);
 
-          $('#jumlah_detail').val(obj.jumlah_detail);
+          $('#jumlah').val(obj.jumlah_detail);
           // $('#id_detail').val(obj.id_detail);
-          $('#keterangan').val(obj.keterangan_detail);
-          $('#unit').val(obj.unit_detail);
-          $('#harga_per_unit').val(obj.harga_per_unit_detail);
-          $('#jumlah_detail').val(obj.jumlah_detail);
+          // $('#keterangan').val(obj.keterangan_detail);
+          // $('#unit').val(obj.unit_detail);
+          // $('#harga_per_unit').val(obj.harga_per_unit_detail);
+          // $('#jumlah_detail').val(obj.jumlah_detail);
 
           $('#modal_cari_doc_a').modal('hide');
       });
     })
+
+
 
 
 // cari data karyawan untuk ttd

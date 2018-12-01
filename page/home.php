@@ -329,6 +329,26 @@ alert(arr);
 });
 });
 </script>
+
+<script type="text/javascript">
+//   // nampilkan jumlah detail
+  function tampilkan(jml) {
+  $.ajax({
+    type: "POST",
+    data: {jml: jml},
+    url: "edit_doc_a.php",
+    success: function(res){
+      $("#results #isi").html(res);
+    }
+  });
+  $("#loading").html("<img src='../dist/img/ajax/loader.gif'/>");
+}
+//jika jumlah diganti
+$(document).on('mousemove', '#jumlah', function() {
+  var selected = $(this).val();
+  tampilkan(selected);
+ });
+</script>
     
 </body>
 </html>

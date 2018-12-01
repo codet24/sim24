@@ -48,8 +48,6 @@ $pdf->AddPage();
 
 // mencetak string 
 $pdf->Ln(2);
-// 'logo.php' di bawah berarti path atau alamat gambar
-// dengan panjang posisi X = 10, Y = 6, dan panjang 30 
 $pdf->Image('../dist/img/logo.jpg',10,10,30);
 // arial bold 15
 
@@ -130,7 +128,6 @@ $pdf->SetFont('Arial','B',8);
 $pdf->Cell(150,6,'TOTAL',1,0,'R');
 $pdf->Cell(40,6,"Rp. ". number_format("$tampil[total]",'0','.','.'),1,0,'L');
 
-
 // // buat jarak untuk ttd
 $pdf->Ln(15);
 $pdf->Cell(38,6,'Dibuat Oleh',0,0,'C');
@@ -146,13 +143,11 @@ $pdf->Cell(38,6,$yang_menyetujui['yang_menyetujui'],0,0,'C');
 $pdf->Cell(38,6,$yang_mengetahui['yang_mengetahui'],0,0,'C');
 $pdf->Cell(38,6,$finance['finance'],0,1,'C');
 
-
 $pdf->Cell(10);
 $pdf->Ln(8);
 $pdf->SetLineWidth(0.1);
 $pdf->SetDash(4, 2); 
 $pdf->Cell(188,0,'',1,0,'C');
-
 
 $pdf->Output();
 ?>
