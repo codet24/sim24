@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
 	
   $('#tabel_dibuat').DataTable( {
           dom: 'Bfrtip',
@@ -50,6 +51,7 @@ $(document).ready(function() {
 $(document).on('click', '.cari_doc_a', function() {
         var id = $(this).data('id');
         $('#modal_cari_doc_a').modal('show');
+
     })
 
 // confim delete
@@ -59,6 +61,10 @@ $(document).on('click', '.confirm_delete_doc_a', function() {
         $('#modal_confirm_delete_doc_a').modal('show');
     })
 
+// confim edit
+// $(document).on('click', '.confirm_edit_doc_a', function() {
+//         $('#modal_confirm_edit_doc_a').modal('show');
+//     })
 
 // pilh data
 $(document).on('click', '.pilih_doc_a', function() {
@@ -91,6 +97,8 @@ $(document).on('click', '.pilih_doc_a', function() {
           $('#total').val(obj.total);
 
           $('#jumlah').val(obj.jumlah_detail);
+          $('#id_doc_a_for_detail').val(obj.doc_a_id);
+
           // $('#id_detail').val(obj.id_detail);
           // $('#keterangan').val(obj.keterangan_detail);
           // $('#unit').val(obj.unit_detail);
@@ -98,6 +106,8 @@ $(document).on('click', '.pilih_doc_a', function() {
           // $('#jumlah_detail').val(obj.jumlah_detail);
 
           $('#modal_cari_doc_a').modal('hide');
+          // $("#isi").load();
+          alert("Mohon Tekan Tombol 'Tampilkan Detail'")
       });
     })
 

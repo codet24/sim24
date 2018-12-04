@@ -218,7 +218,7 @@ case 'edit':
         #validasi
         error_reporting(0);
           if (isset($_POST['update'])) {
-              $modified_by = $_SESSION['id'];
+                $modified_by = $_SESSION['id'];
                 $tanggal_update = date('Y-m-d h:i:s');
 
                 $password = md5($_POST['password']);

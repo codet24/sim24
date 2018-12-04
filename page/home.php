@@ -1,9 +1,9 @@
 <?php
 // error_reporting(0);
-include "../config/koneksi.php";
-// include "../config/function.php";
-include "../config/fungsi_indotgl.php";
 session_start();
+include "../config/koneksi.php";
+include "../config/function.php";
+include "../config/fungsi_indotgl.php";
 ?>
 
 <!DOCTYPE html>
@@ -285,7 +285,7 @@ session_start();
     })
   </script>
 
-<!-- generate -->
+<!-- generate for add-->
 <script type="text/javascript"> 
  $(document).ready(function () {
   var sample = $('#sample').html();
@@ -312,41 +312,29 @@ $('#sample').on('keyup', '[name^=unit], [name^=harga]', function() {
     form.find('[name^=subtotal]').val($subtotal);
   }
 });
-$(document).on('click', '.total', function() {
-  var form = $(this).closest('.form');
-var arr = form.find('[name^=subtotal]').val();
-alert(arr);
-// var tot=0;
-    // for(var i=0;i<arr.length;i++){
-    //     alert(arr[i].value);
-    //     // if(parseInt(arr[i].value))
-    //     //     tot += parseInt(arr[i].value);
 
-    // }
-    // document.getElementById('total').value = tot;
-  // alert(tot);
-  // $('#sample').append(sample);
-});
 });
 </script>
 
+
+
 <script type="text/javascript">
-//   // nampilkan jumlah detail
-  function tampilkan(jml) {
-  $.ajax({
+
+//jika jumlah diganti
+$(document).on('click', '.munculkan_detail', function() {
+    var jml =  document.getElementById("jumlah").value;
+    var id =  document.getElementById("id_doc_a_for_detail").value;
+    // alert(id);
+    $.ajax({
     type: "POST",
-    data: {jml: jml},
+    data: {jml: jml, id: id},
     url: "edit_doc_a.php",
     success: function(res){
       $("#results #isi").html(res);
     }
   });
   $("#loading").html("<img src='../dist/img/ajax/loader.gif'/>");
-}
-//jika jumlah diganti
-$(document).on('mousemove', '#jumlah', function() {
-  var selected = $(this).val();
-  tampilkan(selected);
+
  });
 </script>
     

@@ -1,39 +1,41 @@
 <?php
-/* Candralab Ecommerce v2.0
- * http://www.candra.web.id/
- * Candra adi putra <candraadiputra@gmail.com>
- * last edit: 15 okt 2013
- */
-function kd_trans_penimbangan()
-	{
-		$sql = mysqli_query($con,"SELECT MAX(RIGHT(kd_transaksi,5)) AS notrans
-							FROM transaksi_penimbangan WHERE tgl = '".date('Y-m-d')."'");
-		$m = mysqli_fetch_assoc($sql);
+// include "koneksi.php";
 
+// $bln		= $array_bln[date('n')];
+// echo $bln;
+
+function kd_mor()
+	{
+		// $array_bln	= array(1=>"I","II","III", "IV", "V","VI","VII","VIII","IX","X", "XI","XII");
+
+		$sql = mysqli_query($con,"SELECT SUBSTRING(no_mor,1,3) AS notrans FROM tbl_doc_pengajuan
+		 WHERE DATE_FORMAT('tanggal', '%m') = date('%m') ");
+		$m = mysqli_fetch_assoc($sql);
+		// $kd = number_format($m['notrans'],0)+1;
+		$kd = count($m['notrans']);
+		print_r($kd); exit();
 		$no = 0;
 		if($m['notrans'] <> NULL)
 		{
 			$kd = number_format($m['notrans'],0) + 1;
 			if(strlen($kd) == 1)
 			{
-				$no = "PNM".date('dmy')."0000".$kd;
+				$no = "00".$kd."/MOR/CRB/".date('m')."/".date('Y');
 			}
 			elseif (strlen($kd) == 2) {
-				$no = "PNM".date('dmy')."000".$kd;
+				$no = "0".$kd."/MOR/CRB/".date('m')."/".date('Y');
 			}
-			elseif (strlen($kd) == 3) {
-				$no = "PNM".date('dmy')."00".$kd;
-			}
-			elseif (strlen($kd) == 4) {
-				$no = "PNM".date('dmy')."0".$kd;
-			}
+			// elseif (strlen($kd) == 3) {
+			// 	$no = "0".$kd."/MOR/CRB/".date('m')."/".date('Y');
+				
+			// }
 			else {
-				$no = "PNM".date('dmy').$kd;
+				$no = $kd."/MOR/CRB/".date('m')."/".date('Y');
 			}
 		}
 		else
 		{
-			$no = "PNM".date('dmy')."00001";
+			$no = "001"."/MOR/CRB/".date('m')."/".date('Y');
 		}
 
 		return $no;
@@ -392,8 +394,9 @@ function get_year($thn = '') {
 		echo "<option value='$now' " . selected($thn, $now) . ">" . $now . "</option>";
 		$now--;
 	}
-}?>
+}
 
+?>
 	<?php
 	$tgl_hari_ini = date('Y-m-d');
 	$tgl_experied = date('2018-12-27');

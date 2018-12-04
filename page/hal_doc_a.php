@@ -216,14 +216,35 @@ case 'add':
                             <td style="width:10%"><label class="form-label">No. MOR</label></td>
                             <td style="width:5%"><label class="form-label"> : </label></td> 
                             <td style="width:45%">
+                            <?php 
+                              // untuk angka romawi
+                              // $array_bln = array(1=>"I","II","III", "IV", "V","VI","VII","VIII","IX","X", "XI","XII");
+                              $sql = mysqli_query($con,"SELECT SUBSTRING(no_mor,1,3) AS
+                              notrans FROM tbl_doc_pengajuan  WHERE DATE_FORMAT(tanggal, '%m') = '".date('m')."' ");
+                              $m  = mysqli_fetch_assoc($sql);
+                              $no = 0;
+                              if($m['notrans'] <> NULL){
+                                $kd = number_format($m['notrans'],0) + 1;
+                                if(strlen($kd) == 1){
+                                  $no = "00".$kd."/MOR/CRB/".date('m')."/".date('Y');
+                                }elseif (strlen($kd) == 2) {
+                                  $no = "0".$kd."/MOR/CRB/".date('m')."/".date('Y');
+                                }else {
+                                  $no = $kd."/MOR/CRB/".date('m')."/".date('Y');
+                                }
+                              }else{
+                                $no = "001"."/MOR/CRB/".date('m')."/".date('Y');
+                              }
+                            ?>
+
                             <div class="col-md-8">
                                 <div class="form-group" style="margin-bottom: 0px;padding-bottom:10px"> 
-                                    <div class="input-group">
-                                        <input type="text" name="nomor" value="" class="form-control"  Placeholder="nomor" >
-                                        <span class="input-group-btn">
+                                    <!-- <div class="input-group"> -->
+                                        <input type="text" name="nomor" value="<?php echo $no ?>" class="form-control"  Placeholder="nomor" readonly="">
+                                       <!--  <span class="input-group-btn">
                                             <button type="button" class="cari btn btn-success  btn-flat"><i class="fa fa-search"></i></button>
                                         </span>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                             </td>
@@ -285,8 +306,8 @@ case 'add':
                   <div class="row">
                     <div class="col-sm-3 nopadding">
                         <div class="form-group">
-                          <input type="hidden" name="id_baris[]" />                           
-                          <input type="text" class="form-control" name="keterangan[]" value="" placeholder="Keterangan" required>
+                          <input type="hidden" id="id_baris" name="id_baris[]" />                           
+                          <input type="text" class="form-control" name="keterangan[]" id="keterangan" value="" placeholder="Keterangan" required>
                         </div>
                       </div>  
                       <div class="col-sm-2 nopadding">
@@ -420,6 +441,7 @@ case 'add':
 <?php
 break;
 case 'edit':
+        
 ?>
 <div id='results'>
 <div class="content-wrapper">
@@ -435,7 +457,14 @@ case 'edit':
      <div class="row">
       <div class="col-md-12">
       <?php 
+      
+
+              
+
+
+
         if (isset($_POST['update'])) {
+          error_reporting(0);
           $created_by = $_SESSION['id'];
           $tanggal_sekarang = date('Y-m-d h:i:s');
 
@@ -455,33 +484,53 @@ case 'edit':
           $harga = $_POST['harga'];
           $subtotal = $_POST['subtotal'];
 
-          // $subtotal
-          $no=1;
-          
-
-         $query = mysqli_query($con,"INSERT INTO tbl_doc_pengajuan 
-         (id, no_mor, nama_pekerjaan, tanggal, id_karyawan_dibuat_oleh,id_karyawan_yang_mengajukan, id_karyawan_yang_menyetujui, id_karyawan_yang_mengetahui, id_karyawan_finance,created_by,created_on) 
-          VALUES ('','$nomor','$nama_pekerjaan','$tanggal','$id_karyawan_dibuat_oleh','$id_karyawan_yang_mengajukan','$id_karyawan_yang_menyetujui','$id_karyawan_yang_mengetahui','$id_karyawan_finance','$created_by','$tanggal_sekarang')");
-          $doc_pengajuan_id = mysqli_insert_id($con);
-          for ($i=0;$i<$jumlah_baris;$i++){
-              $detail = mysqli_query($con,"INSERT INTO tbl_doc_pengajuan_detail 
-             (id, doc_pengajuan_id, keterangan, unit, harga_per_unit,created_by,created_on) 
-              VALUES ('','$doc_pengajuan_id','$keterangan[$i]','$unit[$i]','$harga[$i]','$created_by','$tanggal_sekarang')");
+            $modified_by = $_SESSION['id'];
+            $tanggal_update = date('Y-m-d h:i:s');
+           
+            // jika password sama update data
+              $update = mysqli_query($con,"UPDATE tbl_doc_pengajuan SET no_mor='$nomor', 
+                nama_pekerjaan='$nama_pekerjaan', 
+                tanggal='$tanggal', id_karyawan_dibuat_oleh='$id_karyawan_dibuat_oleh',
+                id_karyawan_yang_mengajukan='$id_karyawan_yang_mengajukan', 
+                id_karyawan_yang_menyetujui='$id_karyawan_yang_menyetujui',
+                id_karyawan_yang_mengetahui='$id_karyawan_yang_mengetahui', 
+                id_karyawan_finance='$id_karyawan_finance',
+                modified_by='$modified_by',modified_on='$tanggal_update'
+                WHERE id='$_POST[id_doc_a]'");
+              // update detail
+              for ($i=0;$i<$jumlah_baris;$i++){
+              $update_detail = mysqli_query($con,"UPDATE tbl_doc_pengajuan_detail SET 
+                keterangan='$keterangan[$i]', 
+                unit='$unit[$i]', harga_per_unit='$harga[$i]',
+                modified_by='$modified_by',modified_on='$tanggal_update'
+                WHERE id='$id_baris[$i]' and doc_pengajuan_id='$_POST[id_doc_a]'");
+                }
+              if($update){
+                 echo "<div class='alert alert-success alert-dismissible'>
+                        <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button>
+                        <h4><i class='icon fa fa-check'></i> Data Berhasil Diupdate</h4>
+                      </div>";  ?>
+                        <script>
+                            setTimeout(function () {
+                               window.location = "home.php?pg=doc_a&act=edit"; //will redirect to your blog page (an ex: blog.html)
+                            }, 1000); //will call the function after 2 secs.
+                        </script>
+                    <?php
+                  }else{
+                  echo "<div class='alert alert-danger alert-dismissible'>
+                          <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button>
+                          <h4><i class='icon fa fa-ban'></i> Data Gagal Diupdate</h4>
+                        </div>"; ?>
+                        <script>
+                            setTimeout(function () {
+                               window.location = "home.php?pg=doc_a&act=edit"; //will redirect to your blog page (an ex: blog.html)
+                            }, 1000); //will call the function after 2 secs.
+                        </script>
+                    <?php
+                  }
           }
-         // if($query){
-          echo "<div class='alert alert-success alert-dismissible'>
-                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>×</button>
-                <h4><i class='icon fa fa-check'></i> Data Berhasil Di Simpan </h4>
-              </div>"; ?>
-              <script>
-                  setTimeout(function () {
-                     window.location = "home.php?pg=doc_a&act=add"; //will redirect to your blog page (an ex: blog.html)
-                  }, 1000); //will call the function after 2 secs.
-              </script>
-    <?php
-         
-        }
-       ?>
+
+         ?>
         <div class="box box-primary">
           <div class="box-body">
           <form role="form" action="" method="POST" name="doc-form" >
@@ -519,7 +568,7 @@ case 'edit':
               <br>
               <br>
               <!-- pilih data yang mau di edit-->
-              <input name="id_doc_a" type="text" id="id_doc_a" class="form-control" value="" required>
+              <input name="id_doc_a" type="hidden" id="id_doc_a" class="form-control" value="" required>
                 <div class="form-group">
                   <div class="input-group ">
                   <input name="nama_pekerjaan_atas" type="text" id="nama_pekerjaan_atas" class="form-control" value="" placeholder="Pilih Dokumen" required readonly="">
@@ -581,38 +630,35 @@ case 'edit':
             </div>
             <br>
             <!-- data -->
-           
-                <!-- <button class="generate" type="button">Generate New Form</button> -->
-                <div class="row">
-                  <div class="col-sm-3 nopadding" style="text-align: center;">
-                    <label class="form-label">Keterangan</label>
+            <div class="row">
+              <div class="form-group pull-right" style="margin-bottom: 0px;padding-bottom:10px"> 
+              <div class="col-md-12">
+                  <div class="input-group">
+                      <div class="col-sm-4 nopadding">
+                        <input name="id_doc_a_for_detail" id="id_doc_a_for_detail" class="form-control input-md" type="hidden">
+                      </div>
+                      <div class="col-sm-4 nopadding">
+                        <input type="hidden" name="jumlah" id="jumlah" value="" class="form-control"  Placeholder="nomor" >
+                      </div>
+                      <div class="col-sm-3 col-md-offset-9 nopadding" style="margin-right: -5px;">
+                        <span class="input-group-btn">
+                            <button type="button" class="munculkan_detail btn btn-success  btn-flat"><i class="fa fa-search"></i> Tampilkan Detail</button>
+                        </span>
+                      </div>
                   </div>
-                  <div class="col-sm-2 nopadding" style="text-align: center;">
-                    <label class="form-label" >Unit</label>
                   </div>
-                  <div class="col-sm-3 nopadding" style="text-align: center;">
-                    <label class="form-label">Harga</label>
-                  </div>
-                  <div class="col-sm-3 nopadding" style="text-align: center;">
-                    <label class="form-label">Subtotal</label>
-                  </div>
-                  <div class="col-sm-1">
-                    <button type="button"  class="generate btn btn-warning btn-flat" ><i class="fa fa-plus"></i> </button> 
-                  </div>
-                </div>
-                <br>
-                   <input name="jumlah" id="jumlah" class="form-control input-md" type="text">
+              </div>
+            </div>
                    <!--  -->
+
                    <div id='isi'>
-                        <div id="loading" style="width:90px"> </div>
+                   <div class="row">
+                        <div id="loading" style="width:90px;margin-top: -150px;margin-left: 250px;"> </div>
+                        </div>
                         <center>
-                          <?php 
-                          // include "edit_doc_a.php"; 
-                          ?> 
                         </center>
-                   </div>
-              
-                </div>
+                   
+                    </div>
             <br>
             <br>
             <!-- sign nature -->
@@ -645,7 +691,7 @@ case 'edit':
                                 <div class="form-group" style="margin-bottom: 0px;padding-bottom:10px"> 
                                     <div class="input-group">
                                         <input type="text" name="yang_mengajukan" id="yang_mengajukan" value="" class="form-control"  required style="border-top: 0px;border-left: 0px;" readonly="">
-                                        <input type="text" name="id_karyawan_yang_mengajukan" id="id_karyawan_yang_mengajukan" value="" class="form-control" required style="border-top: 0px;border-left: 0px;">
+                                        <input type="hidden" name="id_karyawan_yang_mengajukan" id="id_karyawan_yang_mengajukan" value="" class="form-control" required style="border-top: 0px;border-left: 0px;">
                                 
                                         <span class="input-group-btn">
                                             <button type="button" class="cari_karyawan_yang_mengajukan btn btn-default  btn-flat"><i class="fa fa-search"></i></button>
@@ -659,7 +705,7 @@ case 'edit':
                                 <div class="form-group" style="margin-bottom: 0px;padding-bottom:10px"> 
                                     <div class="input-group">
                                         <input type="text" name="yang_menyetujui" id="yang_menyetujui" value="" class="form-control"   required style="border-top: 0px;border-left: 0px;" readonly="">
-                                        <input type="text" name="id_karyawan_yang_menyetujui" id="id_karyawan_yang_menyetujui" value="" class="form-control" required style="border-top: 0px;border-left: 0px;">
+                                        <input type="hidden" name="id_karyawan_yang_menyetujui" id="id_karyawan_yang_menyetujui" value="" class="form-control" required style="border-top: 0px;border-left: 0px;">
                                         <span class="input-group-btn">
                                             <button type="button" class="cari_karyawan_yang_menyetujui btn btn-default  btn-flat"><i class="fa fa-search"></i></button>
                                         </span>
@@ -672,7 +718,7 @@ case 'edit':
                                 <div class="form-group" style="margin-bottom: 0px;padding-bottom:10px"> 
                                     <div class="input-group">
                                         <input type="text" name="yang_mengetahui" id="yang_mengetahui" value="" class="form-control"  required style="border-top: 0px;border-left: 0px;" readonly="">
-                                        <input type="text" name="id_karyawan_yang_mengetahui" id="id_karyawan_yang_mengetahui" value="" class="form-control" required style="border-top: 0px;border-left: 0px;">
+                                        <input type="hidden" name="id_karyawan_yang_mengetahui" id="id_karyawan_yang_mengetahui" value="" class="form-control" required style="border-top: 0px;border-left: 0px;">
                                         <span class="input-group-btn">
                                             <button type="button" class="cari_karyawan_yang_mengetahui btn btn-default  btn-flat"><i class="fa fa-search"></i></button>
                                         </span>
@@ -685,7 +731,7 @@ case 'edit':
                                 <div class="form-group" style="margin-bottom: 0px;padding-bottom:10px"> 
                                     <div class="input-group">
                                         <input type="text" name="finance" id="finance" value="" class="form-control"   required style="border-top: 0px;border-left: 0px;" readonly="">
-                                        <input type="text" name="id_karyawan_finance" id="id_karyawan_finance" value="" class="form-control" required style="border-top: 0px;border-left: 0px;">
+                                        <input type="hidden" name="id_karyawan_finance" id="id_karyawan_finance" value="" class="form-control" required style="border-top: 0px;border-left: 0px;">
                                         <span class="input-group-btn">
                                             <button type="button" class="cari_karyawan_finance btn btn-default  btn-flat"><i class="fa fa-search"></i></button>
                                         </span>
@@ -701,8 +747,8 @@ case 'edit':
             <!-- aksi cetak -->
             <div class="row">
                 <div class="col-md-4 col-md-offset-5">
-                <button type="submit" name="save" class="btn btn-primary" onclick="submitForm()">
-                  <i class="fa fa-save"> Save Document</i>  
+                <button type="submit"  name="update" class=" update btn btn-primary" onclick="submitForm()">
+                  <i class="fa fa-save"> Update Document</i>  
                 </button>
             </form>
                  </div>    
@@ -716,6 +762,7 @@ case 'edit':
   </section> 
 </div>
 </div> <!-- end result -->
+
 <?php
 break;
 case 'delete':
@@ -1126,6 +1173,34 @@ break;
             </tbody>
           </table>
         </div>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ////////////////// modal buat edit data -->
+<div class="modal" id="modal_confirm_edit_doc_a" tabindex="-1" role="dialog" aria-labelledby="defModalHead" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <label>Masukkan Password Login Anda untuk mengupdate Data</label>
+      </div>
+      <div class="modal-body">
+        <form role="form" method ="POST" action="?pg=doc_a&act=edit">
+       
+        <!-- masukkan password -->
+        <label class="form-label">Masukkan Password Login</label>
+        <input name="password" type="password" id="password" class="form-control" value="" placeholder="password" required>
+      </div>
+      <div class="row">
+          <div class="col-md-4 col-md-offset-5">
+            <button type="submit" name ='update' class="btn btn-danger">Update</button>
+          </div>
+        </div>
+      </form>
       </div>
       <div class="modal-footer">
       </div>
